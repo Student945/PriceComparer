@@ -29,41 +29,63 @@ When('I fill the keyword space with {string}') do |string|
   fill_in("keyword", with: string)
 end
 
+
+And ('I select the option filter {string}') do |string|
+  select(string, from: "sort_order")
+end
+
 And('i fill the Price min with {int} and Price max with {int}') do |int, int2|
   fill_in("minprice", with: int)
   fill_in("maxprice", with: int2)
   fill_in("minf", with: 1)
   fill_in("maxtime", with: 30)
-  find('select#sort_order').find('option[value=""]').select_option
 end
 
+
+
 And ('I press cerca button') do 
-  within('form[action="/pages/search"]') do  
     click_button("commit")
-  end
-puts current_path
 end
 
 Then('I should be on {string}') do |string|
-   # Write code here that turns the phrase above into concrete actions
+  expect(page).to have_current_path(string)
 end
 
-And ('I should see some results ordered by price') do
-  pending # Write code here that turns the phrase above into concrete actions
+And ('I should see some results with name {string} in it') do |string|
+  elementi=all("div."+"result-item")
+  regex=/#{Regexp.quote(string)}/i
+  elementi.each do |element|
+    expect(element.text).to match(regex)
+  end
 end
 
+And ('the results should be ordere by price') do
+  @elementi=all("div."+"result-item").map do |element|
+    text=element.text
+    prezzo=text.match(/Prezzo:(\d+)USD/)
+    prezzo ? prezzo[1].to_i : nil
+  end
+    @elementi.compact! 
+    expect(@elementi).to match(@elementi.sort)
+  end
 
-
-Then('I should receive some results') do
-  pending # Write code here that turns the phrase above into concrete actions
-end
+  Given('I am on the Search Page') do
+    visit "http://127.0.0.1:3000/pages/search?keyword=car&minprice=15&maxprice=50&minf=1&place=&maxtime=30&commit=Cerca&sort_order=PricePlusShippingLowest"
+  end
+  
 
 When('I Click on Save button') do
-  pending # Write code here that turns the phrase above into concrete actions
+  elementi=all("div."+"result-item")
+  secondo=nil
+  elementi.each do |element|
+    if element.text=="Salva"
+      if secondo==
+
+  
 end
 
-When('I press Save button') do
-  pending # Write code here that turns the phrase above into concrete actions
+When('I am redirected to a {string}') do |string|
+  expect(page).to match(string)
 end
 
 Then('i should see the saved research') do

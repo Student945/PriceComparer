@@ -13,15 +13,17 @@ Scenario: Login
 Scenario: Research by keyword and filter by price
     Given I am on the Home Page
     When I fill the keyword space with "car" 
+    And I select the option filter "Prezzo più basso:"
     And i fill the Price min with 15 and Price max with 50
     And I press cerca button
-    Then I should be on "http://127.0.0.1:3000/pages/search?keyword=car&minprice=15&maxprice=50&minf=1&place=&maxtime=30&sort_order=&commit=Cerca"
-    And I should see some results ordered by price 
+    Then I should be on "http://127.0.0.1:3000/pages/search?keyword=car&minprice=15&maxprice=50&minf=1&place=&maxtime=30&commit=Cerca&sort_order=PricePlusShippingLowest"
+    And I should see some results with name "car" in it
+    And the results should be ordere by price
 
 Scenario: Save Research
     Given I am on the Search Page 
     When I Click on Save button
-    And I am redirected to a Confirm Page
+    And I am redirected to a "http://127.0.0.1:3000/pages/search?keyword=car&minprice=15&maxprice=50&minf=1&place=&maxtime=30&commit=Cerca&sort_order=PricePlusShippingLowest"
     And I press Save button
     And I am redirected to User Page
     Then i should see the saved research
